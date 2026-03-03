@@ -39,7 +39,6 @@ router.post('/', (req, res) => {
   posts.push(newPost);
 
   // D. Risposta
-  res.send(`Creazione del post ${newId} riuscita`);
   res.status(201).json(newPost);
 });
 
@@ -57,9 +56,7 @@ router.put('/:id', (req, res) => {
 
     posts[index] = updatedPost; // Sostituzione effettiva nell'array
     res.json(updatedPost); // Risposta con l'oggetto aggiornato
-    res.send(`Sostituzione del post ${req.params.id} riuscita`);
   } else {
-    res.send(`Sostituzione del post ${req.params.id} fallita`);
     res.status(404).json({ error: 'Post non trovato' });
   }
 });
@@ -80,16 +77,29 @@ router.patch('/:id', (req, res) => {
     if (req.body.tags) post.tags = req.body.tags;
 
     res.json(post); // Rispondi con il post aggiornato
-    res.send(`Aggiornamento del post ${req.params.id} riuscito`);
   } else {
-    res.send(`Aggiornamento del post ${req.params.id} fallito`);
     res.status(404).json({ error: 'Post non trovato' });
   }
 });
 
 // DELETE: Cancellazione di un post
 router.delete('/:id', (req, res) => {
-  res.send(`Cancellazione del post ${req.params.id}`);
+  // A. Trasformiamo l'ID dell'URL in un numero
+  const id = parseInt(req.params.id);
+
+  // B. Cerchiamo la posizione (indice) del post nell'array
+  const index = posts.findIndex((p) => p.id === id);
+
+  if (index !== -1) {
+    // C. Rimuoviamo l'elemento dall'array usando splice
+    posts.splice(index, 1);
+
+    // D. Risposta di successo (204 No Content)
+    res.sendStatus(204);
+  } else {
+    // E. Gestione dell'errore se l'ID non esiste
+    res.status(404).json({ error: 'Post da eliminare non trovato' });
+  }
 });
 
 module.exports = router; // Esportiamo il router per usarlo in app.js
