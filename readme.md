@@ -25,8 +25,6 @@ La struttura segue la separazione delle responsabilità per garantire scalabilit
 
 ## 📦 Installazione e Avvio
 
-## 📦 Installazione e Avvio
-
 1. **Clona la repository**:
    ```bash
    git clone [https://github.com/greencode-dev/express-blog-routing.git](https://github.com/greencode-dev/express-blog-routing.git)
