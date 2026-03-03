@@ -49,6 +49,30 @@ const postController = {
     res.json(posts[index]);
   },
 
+  // MODIFY / PATCH (Aggiornamento parziale)
+  modify: (req, res) => {
+    const id = parseInt(req.params.id);
+    const postIndex = posts.findIndex(p => p.id === id);
+
+    if (postIndex === -1) {
+        return res.status(404).json({ error: "Post non trovato" });
+    }
+
+    // Creiamo un nuovo oggetto fondendo i dati vecchi con quelli nuovi (req.body)
+    const updatedPost = {
+        ...posts[postIndex], // Dati attuali
+        ...req.body          // Sovrascrive solo le chiavi inviate nel body
+    };
+
+    // Assicuriamoci che l'ID rimanga quello originale per sicurezza
+    updatedPost.id = id;
+
+    // Aggiorniamo l'array
+    posts[postIndex] = updatedPost;
+
+    res.json(posts[postIndex]);
+}
+
   // DESTROY (Milestone 2)
   destroy: (req, res) => {
     const id = parseInt(req.params.id);
