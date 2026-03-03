@@ -39,7 +39,7 @@ router.post('/', (req, res) => {
   posts.push(newPost);
 
   // D. Risposta
-  res.send(`Post aggiunto correttamente con ID ${newId}`);
+  res.send(`Creazione del post ${newId} riuscita`);
   res.status(201).json(newPost);
 });
 
@@ -57,14 +57,34 @@ router.put('/:id', (req, res) => {
 
     posts[index] = updatedPost; // Sostituzione effettiva nell'array
     res.json(updatedPost); // Risposta con l'oggetto aggiornato
+    res.send(`Sostituzione del post ${req.params.id} riuscita`);
   } else {
+    res.send(`Sostituzione del post ${req.params.id} fallita`);
     res.status(404).json({ error: 'Post non trovato' });
   }
 });
 
 // UPDATE (PATCH): Aggiornamento parziale di un post
 router.patch('/:id', (req, res) => {
-  res.send(`Aggiornamento parziale del post ${req.params.id}`);
+  const id = parseInt(req.params.id); // Trasformiamo l'ID dell'URL in numero
+  const post = posts.find((p) => p.id === id); // Cerchiamo l'oggetto originale
+
+  if (post) {
+    // Se il campo 'title' è presente nel body inviato da Postman, sovrascrivi quello originale
+    if (req.body.title) post.title = req.body.title;
+
+    // Se 'content' è presente, sovrascrivilo, altrimenti non fare nulla
+    if (req.body.content) post.content = req.body.content;
+
+    if (req.body.image) post.image = req.body.image;
+    if (req.body.tags) post.tags = req.body.tags;
+
+    res.json(post); // Rispondi con il post aggiornato
+    res.send(`Aggiornamento del post ${req.params.id} riuscito`);
+  } else {
+    res.send(`Aggiornamento del post ${req.params.id} fallito`);
+    res.status(404).json({ error: 'Post non trovato' });
+  }
 });
 
 // DELETE: Cancellazione di un post
