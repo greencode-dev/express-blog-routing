@@ -1,0 +1,65 @@
+let posts = require('../data/posts');
+
+const postController = {
+  // INDEX con Filtro Tag (Bonus Milestone 2)
+  index: (req, res) => {
+    let filteredPosts = posts;
+    if (req.query.tag) {
+      filteredPosts = posts.filter((post) => post.tags.includes(req.query.tag));
+    }
+    res.json(filteredPosts);
+  },
+
+  // SHOW con controllo 404
+  show: (req, res) => {
+    const id = parseInt(req.params.id);
+    const post = posts.find((p) => p.id === id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post non trovato' });
+    }
+    res.json(post);
+  },
+
+  // STORE con Validazione e ID più alto (Bonus Milestone 3)
+  store: (req, res) => {
+    const { title, content, image, tags } = req.body;
+
+    // Validazione (Bonus)
+    if (!title || title.length < 3 || !content) {
+      return res.status(400).json({ error: 'Dati non validi: titolo (min 3 car.) e contenuto sono obbligatori.' });
+    }
+
+    // Recupero ID più alto (Bonus)
+    const maxId = posts.length > 0 ? Math.max(...posts.map((p) => p.id)) : 0;
+    const newPost = { id: maxId + 1, title, content, image, tags };
+
+    posts.push(newPost);
+    res.status(201).json(newPost);
+  },
+
+  // UPDATE totale (Milestone 4)
+  update: (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = posts.findIndex((p) => p.id === id);
+
+    if (index === -1) return res.status(404).json({ error: 'Post non trovato' });
+
+    const { title, content, image, tags } = req.body;
+    posts[index] = { id, title, content, image, tags };
+    res.json(posts[index]);
+  },
+
+  // DESTROY (Milestone 2)
+  destroy: (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = posts.findIndex((p) => p.id === id);
+
+    if (index === -1) return res.status(404).json({ error: 'Post non trovato' });
+
+    posts.splice(index, 1);
+    console.log('Lista aggiornata:', posts);
+    res.sendStatus(204);
+  },
+};
+
+module.exports = postController;
