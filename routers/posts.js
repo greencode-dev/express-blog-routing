@@ -10,8 +10,8 @@ router.get('/', (req, res) => {
 
 // SHOW: Singolo post tramite ID
 router.get('/:id', (req, res) => {
-  const id = req.params.id; // Recuperiamo l'ID dall'URL
-  const post = posts.find((p) => p.id == id); // Cerchiamo il post nell'array
+  const id = parseInt(req.params.id); // Recuperiamo l'ID dall'URL e lo convertiamo in numero
+  const post = posts.find((p) => p.id === id); // Cerchiamo il post nell'array
 
   if (post) {
     res.json(post); // Se lo troviamo, lo mandiamo come JSON
@@ -20,9 +20,27 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// CREATE: Creazione nuovo post
+// CREATE: Aggiungere un nuovo post
 router.post('/', (req, res) => {
-  res.send('Creazione di un nuovo post');
+  // A. Calcolo dell'ID
+  const lastPost = posts[posts.length - 1];
+  const newId = lastPost ? lastPost.id + 1 : 1;
+
+  // B. Creazione dell'oggetto
+  const newPost = {
+    id: newId,
+    title: req.body.title,
+    content: req.body.content,
+    image: req.body.image,
+    tags: req.body.tags,
+  };
+
+  // C. Salvataggio
+  posts.push(newPost);
+
+  // D. Risposta
+  res.send(`Post aggiunto correttamente con ID ${newId}`);
+  res.status(201).json(newPost);
 });
 
 // UPDATE: Aggiornamento parziale di un post
