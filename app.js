@@ -3,6 +3,9 @@ const app = express();
 const port = 3000;
 const postsRouter = require('./routers/posts'); // Importiamo il router
 
+// Middleware per il parsing del JSON nei body delle richieste
+app.use(express.json());
+
 // Importante: definiamo il prefisso '/posts' per tutte le rotte del router
 app.use('/posts', postsRouter);
 
