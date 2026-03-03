@@ -1,22 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const posts = require('../data/posts'); // Importiamo i dati creati prima
+const posts = require('../data/posts'); // Importa i dati creati prima
 
 // INDEX: Lista di tutti i post
 router.get('/', (req, res) => {
-  // BONUS: Restituiamo la lista in formato JSON
+  // BONUS: Restituisci la lista in formato JSON
   res.json(posts);
 });
 
 // SHOW: Singolo post tramite ID
 router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id); // Recuperiamo l'ID dall'URL e lo convertiamo in numero
-  const post = posts.find((p) => p.id === id); // Cerchiamo il post nell'array
+  const id = parseInt(req.params.id); // Recupera l'ID dall'URL e convertilo in numero
+  const post = posts.find((p) => p.id === id); // Cerca il post nell'array
 
   if (post) {
-    res.json(post); // Se lo troviamo, lo mandiamo come JSON
+    res.json(post); // Se lo trovi, mandalo come JSON
   } else {
-    res.status(404).send('Post non trovato'); // Altrimenti errore 404
+    res.status(404).json({ error: 'Post non trovato' }); // Altrimenti errore 404
   }
 });
 
@@ -63,8 +63,8 @@ router.put('/:id', (req, res) => {
 
 // UPDATE (PATCH): Aggiornamento parziale di un post
 router.patch('/:id', (req, res) => {
-  const id = parseInt(req.params.id); // Trasformiamo l'ID dell'URL in numero
-  const post = posts.find((p) => p.id === id); // Cerchiamo l'oggetto originale
+  const id = parseInt(req.params.id); // Trasforma l'ID dell'URL in numero
+  const post = posts.find((p) => p.id === id); // Cerca l'oggetto originale
 
   if (post) {
     // Se il campo 'title' è presente nel body inviato da Postman, sovrascrivi quello originale
@@ -84,18 +84,18 @@ router.patch('/:id', (req, res) => {
 
 // DELETE: Cancellazione di un post
 router.delete('/:id', (req, res) => {
-  // A. Trasformiamo l'ID dell'URL in un numero
+  // A. Trasforma l'ID dell'URL in un numero
   const id = parseInt(req.params.id);
 
-  // B. Cerchiamo la posizione (indice) del post nell'array
+  // B. Cerca la posizione (indice) del post nell'array
   const index = posts.findIndex((p) => p.id === id);
 
   if (index !== -1) {
-    // C. Rimuoviamo l'elemento dall'array usando splice
+    // C. Rimuovi l'elemento dall'array usando splice
     posts.splice(index, 1);
 
     // D. Risposta di successo (204 No Content)
-    res.sendStatus(204);
+    res.sendStatus(204).json({ message: 'Post eliminato con successo' });
   } else {
     // E. Gestione dell'errore se l'ID non esiste
     res.status(404).json({ error: 'Post da eliminare non trovato' });
