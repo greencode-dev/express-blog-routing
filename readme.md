@@ -56,6 +56,7 @@ Il server sarà attivo all'indirizzo: **http://localhost:3000**
 | **GET**    | `/posts/:id` | Dettagli di un singolo post      | Risponde con **404** se l'ID non esiste |
 | **POST**   | `/posts`     | Crea e aggiunge un nuovo post    | Genera l'ID più alto esistente + 1      |
 | **PUT**    | `/posts/:id` | Aggiornamento totale             | Sostituisce l'intera risorsa            |
+| **PATCH**  | `/posts/:id` | Aggiornamento parziale           | Modifica solo i campi inviati nel body  |
 | **DELETE** | `/posts/:id` | Elimina un post                  | Risponde con stato **204 No Content**   |
 
 ---
