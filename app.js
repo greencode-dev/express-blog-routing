@@ -1,17 +1,28 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const postsRouter = require('./routers/posts'); // Importiamo il router
+const postsRouter = require('./routers/posts');
+const notFound = require('./middlewares/notFound');
+const errorsHandler = require('./middlewares/errorsHandler');
 
-// Middleware per il parsing del JSON nei body delle richieste
+// Middleware per file statici
+app.use(express.static('public'));
+
+// Body Parser (Milestone 2)
 app.use(express.json());
 
-// Importante: definiamo il prefisso '/posts' per tutte le rotte del router
+// Bonus: Logger middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
+  next();
+});
+
+// Rotte principali
 app.use('/posts', postsRouter);
 
-app.get('/', (req, res) => {
-  res.send('Server del mio Blog funzionante!');
-});
+// Middleware di chiusura (Milestone ultima lezione)
+app.use(notFound);
+app.use(errorsHandler);
 
 app.listen(port, () => {
   console.log(`Server in ascolto su http://localhost:${port}`);
