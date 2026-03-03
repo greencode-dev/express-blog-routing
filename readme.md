@@ -27,7 +27,7 @@ La struttura segue la separazione delle responsabilità per garantire scalabilit
 
 1. **Clona la repository**:
    ```bash
-   git clone [https://github.com/greencode-dev/express-blog-routing.git](https://github.com/greencode-dev/express-blog-routing.git)
+   git clone https://github.com/greencode-dev/express-blog-routing.git
    ```
 2. **Entra nella cartella del progetto**:
 
