@@ -10,7 +10,7 @@ const postController = {
       filteredPosts = posts.filter((post) => {
         // 2. Usa .some() per controllare se almeno un tag del post
         // (trasformato in minuscolo) corrisponde al termine cercato
-        return post.tags.some((tag) => tag.toLowerCase() === searchTerm);
+        return post.tags.some((tag) => tag.toLowerCase().includes(searchTerm));
       });
     }
 
