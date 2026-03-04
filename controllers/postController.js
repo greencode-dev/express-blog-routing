@@ -88,7 +88,6 @@ const postController = {
     if (index === -1) return res.status(404).json({ error: 'Post non trovato' });
 
     posts.splice(index, 1);
-    console.log('Lista aggiornata:', posts);
     res.sendStatus(204);
   },
 };
