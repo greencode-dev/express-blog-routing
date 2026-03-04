@@ -5,8 +5,15 @@ const postController = {
   index: (req, res) => {
     let filteredPosts = posts;
     if (req.query.tag) {
-      filteredPosts = posts.filter((post) => post.tags.includes(req.query.tag));
+      // 1. Trasforma il tag cercato dall'utente in minuscolo
+      const searchTerm = req.query.tag.toLowerCase();
+      filteredPosts = posts.filter((post) => {
+        // 2. Usa .some() per controllare se almeno un tag del post
+        // (trasformato in minuscolo) corrisponde al termine cercato
+        return post.tags.some((tag) => tag.toLowerCase() === searchTerm);
+      });
     }
+
     res.json(filteredPosts);
   },
 
