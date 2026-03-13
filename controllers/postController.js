@@ -1,9 +1,7 @@
 const dbConnection = require('../data/db');
-// Per le altre rotte che non sono ancora state migrate, continuiamo a usare i dati in memoria.
-const posts = require('../data/posts');
 
 const postController = {
-    // INDEX con Filtro Tag (Bonus Milestone 2)
+    // INDEX: Ritorna la lista dei post, filtrabili per tag
     index: (req, res) => {
         const { tag } = req.query;
 
@@ -25,7 +23,7 @@ const postController = {
         });
     },
 
-    // SHOW con controllo 404
+    // SHOW: Ritorna i dettagli di un singolo post
     show: (req, res) => {
         const { id } = req.params;
 
@@ -37,62 +35,126 @@ const postController = {
         });
     },
 
-    // STORE con Validazione e ID più alto (Bonus Milestone 3)
+    // STORE: Crea un nuovo post
     store: (req, res) => {
         const { title, content, image, tags } = req.body;
 
-        // Validazione (Bonus)
+        // Validazione
         if (!title || title.length < 3 || !content) {
             return res.status(400).json({
                 error: 'Dati non validi: titolo (min 3 car.) e contenuto sono obbligatori.',
             });
         }
 
-        // Recupero ID più alto (Bonus)
-        const maxId = posts.length > 0 ? Math.max(...posts.map((p) => p.id)) : 0;
-        const newPost = { id: maxId + 1, title, content, image, tags };
-
-        posts.push(newPost);
-        res.status(201).json(newPost);
-    },
-
-    // UPDATE totale (Milestone 4)
-    update: (req, res) => {
-        const id = parseInt(req.params.id);
-        const index = posts.findIndex((p) => p.id === id);
-
-        if (index === -1) return res.status(404).json({ error: 'Post non trovato' });
-
-        const { title, content, image, tags } = req.body;
-        posts[index] = { id, title, content, image, tags };
-        res.json(posts[index]);
-    },
-
-    // MODIFY / PATCH (Aggiornamento parziale)
-    modify: (req, res) => {
-        const id = parseInt(req.params.id);
-        const postIndex = posts.findIndex((p) => p.id === id);
-
-        if (postIndex === -1) {
-            return res.status(404).json({ error: 'Post non trovato' });
-        }
-
-        // Creiamo un nuovo oggetto fondendo i dati vecchi con quelli nuovi (req.body)
-        const updatedPost = {
-            ...posts[postIndex], // Dati attuali
-            ...req.body, // Sovrascrive solo le chiavi inviate nel body
+        const newPostData = {
+            title,
+            content,
+            image: image || null,
+            tags: tags && Array.isArray(tags) ? tags.join(',') : null,
         };
 
-        // Assicuriamoci che l'ID rimanga quello originale per sicurezza
-        updatedPost.id = id;
+        const sql = 'INSERT INTO posts SET ?';
 
-        // Aggiorniamo l'array
-        posts[postIndex] = updatedPost;
+        dbConnection.query(sql, newPostData, (err, result) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .json({ error: 'Errore del server durante la creazione del post.' });
+            }
 
-        res.json(posts[postIndex]);
+            const newId = result.insertId;
+            const selectSql = 'SELECT * FROM posts WHERE id = ?';
+            dbConnection.query(selectSql, [newId], (err, selectResults) => {
+                if (err) {
+                    return res
+                        .status(500)
+                        .json({ error: 'Errore del server durante il recupero del post creato.' });
+                }
+                res.status(201).json(selectResults[0]);
+            });
+        });
     },
 
-    // DESTROY (Milestone 2)
+    // UPDATE: Aggiorna interamente un post
+    update: (req, res) => {
+        const { id } = req.params;
+        const { title, content, image, tags } = req.body;
+
+        if (!title || !content) {
+            return res.status(400).json({
+                error: "Dati non validi: titolo e contenuto sono obbligatori per l'aggiornamento.",
+            });
+        }
+
+        const updatedPostData = {
+            title,
+            content,
+            image: image || null,
+            tags: tags && Array.isArray(tags) ? tags.join(',') : null,
+        };
+
+        const sql = 'UPDATE posts SET ? WHERE id = ?';
+
+        dbConnection.query(sql, [updatedPostData, id], (err, result) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .json({ error: "Errore del server durante l'aggiornamento del post." });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Post non trovato' });
+            }
+
+            const selectSql = 'SELECT * FROM posts WHERE id = ?';
+            dbConnection.query(selectSql, [id], (err, selectResults) => {
+                if (err) {
+                    return res.status(500).json({
+                        error: 'Errore del server durante il recupero del post aggiornato.',
+                    });
+                }
+                res.json(selectResults[0]);
+            });
+        });
+    },
+
+    // MODIFY: Aggiorna parzialmente un post
+    modify: (req, res) => {
+        const { id } = req.params;
+        const fieldsToUpdate = { ...req.body };
+
+        if (Object.keys(fieldsToUpdate).length === 0) {
+            return res.status(400).json({ error: 'Nessun campo da aggiornare fornito.' });
+        }
+
+        if (fieldsToUpdate.tags && Array.isArray(fieldsToUpdate.tags)) {
+            fieldsToUpdate.tags = fieldsToUpdate.tags.join(',');
+        }
+
+        const sql = 'UPDATE posts SET ? WHERE id = ?';
+
+        dbConnection.query(sql, [fieldsToUpdate, id], (err, result) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .json({ error: 'Errore del server durante la modifica del post.' });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Post non trovato' });
+            }
+
+            const selectSql = 'SELECT * FROM posts WHERE id = ?';
+            dbConnection.query(selectSql, [id], (err, selectResults) => {
+                if (err) {
+                    return res.status(500).json({
+                        error: 'Errore del server durante il recupero del post modificato.',
+                    });
+                }
+                res.json(selectResults[0]);
+            });
+        });
+    },
+
+    // DESTROY: Elimina un post
     destroy: (req, res) => {
         const { id } = req.params;
         const sql = 'DELETE FROM posts WHERE id = ?';
