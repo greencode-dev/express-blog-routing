@@ -13,8 +13,8 @@ app.use(express.json());
 
 // Bonus: Logger middleware
 app.use((req, res, next) => {
-  console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
-  next();
+    console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
+    next();
 });
 
 // Rotte principali
@@ -25,5 +25,5 @@ app.use(notFound);
 app.use(errorsHandler);
 
 app.listen(port, () => {
-  console.log(`Server in ascolto su http://localhost:${port}`);
+    console.log(`Server in ascolto su http://localhost:${port}`);
 });

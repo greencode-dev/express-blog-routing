@@ -1,19 +1,11 @@
 const dbConnection = require('../data/db');
 
 const postController = {
-    // INDEX: Ritorna la lista dei post, filtrabili per tag
+    // INDEX: Ritorna la lista dei post
     index: (req, res) => {
-        const { tag } = req.query;
+        const sql = 'SELECT * FROM posts';
 
-        let sql = 'SELECT * FROM posts';
-        const params = [];
-
-        if (tag) {
-            sql += ' WHERE tags LIKE ?';
-            params.push(`%${tag}%`);
-        }
-
-        dbConnection.query(sql, params, (err, results) => {
+        dbConnection.query(sql, (err, results) => {
             if (err) {
                 return res
                     .status(500)
