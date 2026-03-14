@@ -8,6 +8,7 @@ const postController = {
         // Esecuzione della query per recuperare tutti i post
         dbConnection.query(sql, (err, results) => {
             if (err) {
+                console.error('Errore query SELECT INDEX:', err);
                 return res
                     .status(500)
                     .json({ error: 'Errore del server: impossibile recuperare i post.' });
@@ -22,12 +23,14 @@ const postController = {
     // SHOW: Ritorna i dettagli di un singolo post
     show: (req, res) => {
         const { id } = req.params;
-
         const sql = 'SELECT * FROM posts WHERE id = ?';
 
         // Esecuzione della query per recuperare un singolo post tramite ID
         dbConnection.query(sql, [id], (err, results) => {
-            if (err) return res.status(500).json({ error: 'Errore del server' });
+            if (err) {
+                console.error('Errore query SELECT SHOW:', err);
+                return res.status(500).json({ error: 'Errore del server' });
+            }
 
             if (results.length === 0) return res.status(404).json({ error: 'Post non trovato' });
 
@@ -52,7 +55,6 @@ const postController = {
             title,
             content,
             image: image || null,
-            tags: tags && Array.isArray(tags) ? tags.join(',') : null,
         };
 
         const sql = 'INSERT INTO posts SET ?';
@@ -60,9 +62,8 @@ const postController = {
         // Esecuzione della query per l'inserimento di un nuovo post
         dbConnection.query(sql, newPostData, (err, result) => {
             if (err) {
-                return res
-                    .status(500)
-                    .json({ error: 'Errore del server durante la creazione del post.' });
+                console.error('Errore query INSERT STORE:', err);
+                return res.status(500).json({ error: 'Errore del server durante la creazione del post.' });
             }
 
             console.log(result);
@@ -73,6 +74,7 @@ const postController = {
             // Esecuzione della query per recuperare i dati del post appena inserito
             dbConnection.query(selectSql, [newId], (err, selectResults) => {
                 if (err) {
+                    console.error('Errore query SELECT STORE:', err);
                     return res
                         .status(500)
                         .json({ error: 'Errore del server durante il recupero del post creato.' });
@@ -99,7 +101,6 @@ const postController = {
             title,
             content,
             image: image || null,
-            tags: tags && Array.isArray(tags) ? tags.join(',') : null,
         };
 
         const sql = 'UPDATE posts SET ? WHERE id = ?';
@@ -107,9 +108,8 @@ const postController = {
         // Esecuzione della query per l'aggiornamento completo del post
         dbConnection.query(sql, [updatedPostData, id], (err, result) => {
             if (err) {
-                return res
-                    .status(500)
-                    .json({ error: "Errore del server durante l'aggiornamento del post." });
+                console.error('Errore query UPDATE:', err);
+                return res.status(500).json({ error: "Errore del server durante l'aggiornamento del post." });
             }
             console.log(result);
 
@@ -122,6 +122,7 @@ const postController = {
             // Esecuzione della query per recuperare i dati del post appena aggiornato
             dbConnection.query(selectSql, [id], (err, selectResults) => {
                 if (err) {
+                    console.error('Errore query SELECT UPDATE:', err);
                     return res.status(500).json({
                         error: 'Errore del server durante il recupero del post aggiornato.',
                     });
@@ -142,8 +143,9 @@ const postController = {
             return res.status(400).json({ error: 'Nessun campo da aggiornare fornito.' });
         }
 
-        if (fieldsToUpdate.tags && Array.isArray(fieldsToUpdate.tags)) {
-            fieldsToUpdate.tags = fieldsToUpdate.tags.join(',');
+        // Rimuoviamo il campo tags se presente, in quanto la colonna non è nel database
+        if ('tags' in fieldsToUpdate) {
+            delete fieldsToUpdate.tags;
         }
 
         const sql = 'UPDATE posts SET ? WHERE id = ?';
@@ -151,9 +153,8 @@ const postController = {
         // Esecuzione della query per l'aggiornamento parziale del post
         dbConnection.query(sql, [fieldsToUpdate, id], (err, result) => {
             if (err) {
-                return res
-                    .status(500)
-                    .json({ error: 'Errore del server durante la modifica del post.' });
+                console.error('Errore query MODIFY:', err);
+                return res.status(500).json({ error: 'Errore del server durante la modifica del post.' });
             }
             console.log(result);
 
@@ -166,9 +167,8 @@ const postController = {
             // Esecuzione della query per recuperare i dati del post appena modificato
             dbConnection.query(selectSql, [id], (err, selectResults) => {
                 if (err) {
-                    return res.status(500).json({
-                        error: 'Errore del server durante il recupero del post modificato.',
-                    });
+                    console.error('Errore query SELECT MODIFY:', err);
+                    return res.status(500).json({ error: 'Errore del server durante il recupero del post modificato.' });
                 }
                 console.log(selectResults);
 
@@ -184,7 +184,10 @@ const postController = {
 
         // Esecuzione della query per l'eliminazione del post
         dbConnection.query(sql, [id], (err, results) => {
-            if (err) return res.status(500).json({ error: 'Errore del server' });
+            if (err) {
+                console.error('Errore query DELETE DESTROY:', err);
+                return res.status(500).json({ error: 'Errore del server' });
+            }
 
             console.log(results);
 
