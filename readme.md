@@ -7,6 +7,7 @@ Un'API RESTful costruita con **Node.js** ed **Express** per la gestione completa
 - **Node.js**: Ambiente di runtime Javascript.
 - **Express.js**: Framework web per la gestione di rotte e middleware.
 - **Nodemon**: Utility per il riavvio automatico del server durante lo sviluppo.
+- **mysql2**: Driver MySQL per Node.js.
 - **Postman**: Strumento utilizzato per il testing degli endpoint CRUD.
 
 ---
@@ -26,25 +27,31 @@ La struttura segue la separazione delle responsabilità per garantire scalabilit
 ## 📦 Installazione e Avvio
 
 1. **Clona la repository**:
-   ```bash
-   git clone https://github.com/greencode-dev/express-blog-routing.git
-   ```
+    ```bash
+    git clone https://github.com/greencode-dev/express-blog-sql.git
+    ```
 2. **Entra nella cartella del progetto**:
 
-   ```bash
-   cd express-blog-routing
-   ```
+    ```bash
+     cd express-blog-routing
+    ```
 
 3. **Installa le dipendenze**:
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 4. **Avvia il server in modalità sviluppo**:
-   ```bash
-   npx nodemon app.js
-   ```
+    ```bash
+    npx nodemon app.js
+    ```
 
-Il server sarà attivo all'indirizzo: **http://localhost:3000**
+## Il server sarà attivo all'indirizzo: **http://localhost:3000**
+
+---
+
+## ⚙️ Configurazione Database
+
+Assicurati di aver configurato correttamente il tuo database MySQL. Le impostazioni di connessione si trovano nel file `/data/db.js`. Modifica le credenziali secondo le tue necessità.
 
 ---
 
@@ -119,5 +126,4 @@ Per rendere il progetto pronto per la produzione, potrebbe essere utile incremen
 ## 👤 Autore
 **Studente Full Stack Web Developer** *Progetto realizzato durante il modulo di Express.js*
 
----
 ```
