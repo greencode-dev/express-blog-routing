@@ -5,12 +5,16 @@ const postController = {
     index: (req, res) => {
         const sql = 'SELECT * FROM posts';
 
+        // Esecuzione della query per recuperare tutti i post
         dbConnection.query(sql, (err, results) => {
             if (err) {
                 return res
                     .status(500)
                     .json({ error: 'Errore del server: impossibile recuperare i post.' });
             }
+
+            console.log(results);
+
             res.json(results);
         });
     },
@@ -20,9 +24,15 @@ const postController = {
         const { id } = req.params;
 
         const sql = 'SELECT * FROM posts WHERE id = ?';
+
+        // Esecuzione della query per recuperare un singolo post tramite ID
         dbConnection.query(sql, [id], (err, results) => {
             if (err) return res.status(500).json({ error: 'Errore del server' });
+
             if (results.length === 0) return res.status(404).json({ error: 'Post non trovato' });
+
+            console.log(results);
+
             res.json(results[0]);
         });
     },
@@ -47,6 +57,7 @@ const postController = {
 
         const sql = 'INSERT INTO posts SET ?';
 
+        // Esecuzione della query per l'inserimento di un nuovo post
         dbConnection.query(sql, newPostData, (err, result) => {
             if (err) {
                 return res
@@ -54,14 +65,20 @@ const postController = {
                     .json({ error: 'Errore del server durante la creazione del post.' });
             }
 
+            console.log(result);
+
             const newId = result.insertId;
             const selectSql = 'SELECT * FROM posts WHERE id = ?';
+
+            // Esecuzione della query per recuperare i dati del post appena inserito
             dbConnection.query(selectSql, [newId], (err, selectResults) => {
                 if (err) {
                     return res
                         .status(500)
                         .json({ error: 'Errore del server durante il recupero del post creato.' });
                 }
+                console.log(selectResults);
+
                 res.status(201).json(selectResults[0]);
             });
         });
@@ -87,23 +104,30 @@ const postController = {
 
         const sql = 'UPDATE posts SET ? WHERE id = ?';
 
+        // Esecuzione della query per l'aggiornamento completo del post
         dbConnection.query(sql, [updatedPostData, id], (err, result) => {
             if (err) {
                 return res
                     .status(500)
                     .json({ error: "Errore del server durante l'aggiornamento del post." });
             }
+            console.log(result);
+
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: 'Post non trovato' });
             }
 
             const selectSql = 'SELECT * FROM posts WHERE id = ?';
+
+            // Esecuzione della query per recuperare i dati del post appena aggiornato
             dbConnection.query(selectSql, [id], (err, selectResults) => {
                 if (err) {
                     return res.status(500).json({
                         error: 'Errore del server durante il recupero del post aggiornato.',
                     });
                 }
+                console.log(selectResults);
+
                 res.json(selectResults[0]);
             });
         });
@@ -124,23 +148,30 @@ const postController = {
 
         const sql = 'UPDATE posts SET ? WHERE id = ?';
 
+        // Esecuzione della query per l'aggiornamento parziale del post
         dbConnection.query(sql, [fieldsToUpdate, id], (err, result) => {
             if (err) {
                 return res
                     .status(500)
                     .json({ error: 'Errore del server durante la modifica del post.' });
             }
+            console.log(result);
+
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: 'Post non trovato' });
             }
 
             const selectSql = 'SELECT * FROM posts WHERE id = ?';
+
+            // Esecuzione della query per recuperare i dati del post appena modificato
             dbConnection.query(selectSql, [id], (err, selectResults) => {
                 if (err) {
                     return res.status(500).json({
                         error: 'Errore del server durante il recupero del post modificato.',
                     });
                 }
+                console.log(selectResults);
+
                 res.json(selectResults[0]);
             });
         });
@@ -150,10 +181,16 @@ const postController = {
     destroy: (req, res) => {
         const { id } = req.params;
         const sql = 'DELETE FROM posts WHERE id = ?';
+
+        // Esecuzione della query per l'eliminazione del post
         dbConnection.query(sql, [id], (err, results) => {
             if (err) return res.status(500).json({ error: 'Errore del server' });
+
+            console.log(results);
+
             if (results.affectedRows === 0)
                 return res.status(404).json({ error: 'Post non trovato' });
+
             res.sendStatus(204);
         });
     },
