@@ -8,19 +8,19 @@ const errorsHandler = require('./middlewares/errorsHandler');
 // Middleware per file statici
 app.use(express.static('public'));
 
-// Body Parser (Milestone 2)
+// Body Parser
 app.use(express.json());
 
-// Bonus: Logger middleware
+// Logger middleware
 app.use((req, res, next) => {
-    console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
+    console.log(`[Richiesta del ${new Date().toLocaleString()}] Query: ${req.method} ${req.url}`);
     next();
 });
 
 // Rotte principali
 app.use('/posts', postsRouter);
 
-// Middleware di chiusura (Milestone ultima lezione)
+// Middleware di chiusura
 app.use(notFound);
 app.use(errorsHandler);
 
