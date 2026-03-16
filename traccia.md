@@ -1,30 +1,20 @@
-# Ciao studente, oggi lavoriamo nella repo: express-blog-sql
+Ciao a tutti, oggi continuate l'esercizio precedente. Seguite questi passaggi:
 
-## ESERCIZIO
+- Assicuratevi di aver completato le milestone precedenti
+- Create un metodo di `show` che restituisca il singolo post
+- Aggregate in `show` anche i dati relativi ai tag
+- Scrivete il metodo di `create`
+- Scrivete il metodo di `update`
 
-Prendiamo le API precedentemente create per il vostro blog ed aggiungiamo la persistenza tramite la connessione a un DB.
+Assicuratevi di testare man mano che procedete.
 
-### MILESTONE 1
+Ricordatevi di seguire le slide e tenere per ultimi eventuali **BONUS** visti a lezione come:
 
-- Importiamo il db in allegato su MySQL Workbench
-- Installiamo il client mysql2 con `npm i mysql2` nell’app Express
-- Creiamo un file di configurazione per connettere il database
-- Inseriamo un console.log nella logica di connessione e proviamo ad avviare l’applicazione per verificare che non ci siano errori.
+- `index` con filtro per i tags
+- `delete` con 404
+- `insert`/`update` che restituiscono l'oggetto in questione
+- `mysql2` con promise
 
-### MILESTONE 2
+Tutte queste funzionalità extra sono facoltative e le rivedremo durante l'ultimo modulo "web-app". Molte di queste sono davvero molto complesse quindi se volete cimentarvici assicuratevi prima di fare una bella commit 😉
 
-- Facciamo sì che l’API di INDEX restituisca la lista di post recuperata dal database in formato JSON
-- Verifichiamo su Postman che la risposta sia corretta
-
-### MILESTONE 3
-
-- Facciamo sì che l’API di DESTROY permetta di eliminare un post dal database
-- Verifichiamo su Postman che la chiamata non dia errore e risponda 204
-- Verifichiamo su MySQL Workbench che il post venga effettivamente rimosso
-
-### BONUS
-
-- Facciamo sì che l’API di SHOW restituisca il post desiderato in formato JSON
-- Verifichiamo su Postman che la risposta sia corretta
-
-Buon lavoro!
+Buon lavoro a tutti!

@@ -1,6 +1,6 @@
 # Express Blog API 🚀
 
-Un'API RESTful costruita con **Node.js** ed **Express** per la gestione completa dei post di un blog. Il progetto segue l'architettura **MVC** (Model-View-Controller) e include sistemi di validazione, gestione dinamica degli ID e middleware personalizzati per il controllo degli errori.
+Un'API RESTful costruita con **Node.js** ed **Express** per la gestione completa dei post di un blog. Il progetto segue l'architettura **MVC** (Model-View-Controller) e integra un **Database MySQL** reale per la persistenza dei dati, sia utilizzando le classiche callback che le più moderne espressioni Promise.
 
 ## 🛠️ Tecnologie e Strumenti
 
@@ -16,8 +16,8 @@ Un'API RESTful costruita con **Node.js** ed **Express** per la gestione completa
 
 La struttura segue la separazione delle responsabilità per garantire scalabilità e manutenibilità:
 
-- `/controllers`: Contiene la logica di manipolazione dei dati (`postController.js`).
-- `/data`: Contiene l'array dei post che funge da database temporaneo (`posts.js`).
+- `/controllers`: Contiene la logica di manipolazione dei dati usando il database (`postController.js` con callback e `postControllerPromise.js` con Promise).
+- `/data`: Contiene la configurazione per la connessione al database MySQL (`db.js`).
 - `/middlewares`: Gestione degli errori (500), rotte non trovate (404) e logger delle richieste.
 - `/routers`: Definizione dei percorsi API e associazione ai metodi del controller.
 - `app.js`: Punto di ingresso dell'applicazione e configurazione del server.
@@ -27,23 +27,23 @@ La struttura segue la separazione delle responsabilità per garantire scalabilit
 ## 📦 Installazione e Avvio
 
 1. **Clona la repository**:
-    ```bash
-    git clone https://github.com/greencode-dev/express-blog-sql.git
-    ```
+   ```bash
+   git clone https://github.com/greencode-dev/express-blog-sql.git
+   ```
 2. **Entra nella cartella del progetto**:
 
-    ```bash
-     cd express-blog-routing
-    ```
+   ```bash
+    cd express-blog-sql
+   ```
 
 3. **Installa le dipendenze**:
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 4. **Avvia il server in modalità sviluppo**:
-    ```bash
-    npx nodemon app.js
-    ```
+   ```bash
+   npx nodemon app.js
+   ```
 
 ## Il server sarà attivo all'indirizzo: **http://localhost:3000**
 
@@ -57,14 +57,19 @@ Assicurati di aver configurato correttamente il tuo database MySQL. Le impostazi
 
 ## 🛣️ Endpoint API (CRUD)
 
-| Metodo     | Rotta        | Descrizione                      | Validazione / Bonus                     |
+Il progetto espone due set di rotte per interagire con il database, dimostrando l'utilizzo sia delle chiamate asincrone classiche che delle Promise:
+
+- **Rotte classiche (Callback)**: `/posts`
+- **Rotte moderne (Promise)**: `/posts/promise`
+
+| Metodo     | Rotta        | Descrizione                      | Dettagli sul DB                         |
 | :--------- | :----------- | :------------------------------- | :-------------------------------------- |
-| **GET**    | `/posts`     | Ritorna la lista di tutti i post | Supporta filtro per tag: `?tag=Dolci`   |
-| **GET**    | `/posts/:id` | Dettagli di un singolo post      | Risponde con **404** se l'ID non esiste |
-| **POST**   | `/posts`     | Crea e aggiunge un nuovo post    | Genera l'ID più alto esistente + 1      |
-| **PUT**    | `/posts/:id` | Aggiornamento totale             | Sostituisce l'intera risorsa            |
-| **PATCH**  | `/posts/:id` | Aggiornamento parziale           | Modifica solo i campi inviati nel body  |
-| **DELETE** | `/posts/:id` | Elimina un post                  | Risponde con stato **204 No Content**   |
+| **GET**    | `/`          | Ritorna la lista di tutti i post | Esegue `SELECT * FROM posts`            |
+| **GET**    | `/:id`       | Dettagli di un singolo post      | Risponde con **404** se l'ID non esiste |
+| **POST**   | `/`          | Crea e aggiunge un nuovo post    | `INSERT INTO posts` e ritorna record    |
+| **PUT**    | `/:id`       | Aggiornamento totale             | Modifica intera riga e aggiorna il DB   |
+| **PATCH**  | `/:id`       | Aggiornamento parziale           | Aggiorna solo i campi inviati           |
+| **DELETE** | `/:id`       | Elimina un post                  | Elimina la riga e ritorna **204**       |
 
 ---
 
@@ -103,7 +108,7 @@ Per creare un post, invia una richiesta **POST** a `/posts` con questo JSON nel 
 ---
 
 ## 📝 Note sulla Persistenza
-I dati sono gestiti in **memoria volatile (RAM)**. Poiché l'array viene caricato all'avvio dal file `data/posts.js`, ogni modifica apportata tramite le API (`POST`, `PUT`, `DELETE`) verrà resettata ai valori iniziali ogni volta che il server viene riavviato (ad esempio tramite *Nodemon* dopo una modifica al codice).
+I dati sono gestiti in un **Database MySQL** reale. Ogni operazione CRUD (`POST`, `PUT`, `PATCH`, `DELETE`) esegue direttamente una query SQL (es. `INSERT`, `UPDATE`, `DELETE`), garantendo la persistenza definitiva dei dati tra le varie sessioni e al riavvio del server.
 
 ---
 
@@ -117,9 +122,9 @@ Per evitare di caricare file non necessari o pesanti su GitHub, è stato configu
 
 ## 🚀 Sviluppi Futuri
 Per rendere il progetto pronto per la produzione, potrebbe essere utile incrementare i prossimi step:
-1. **Persistenza su File**: Utilizzo del modulo `fs` di Node.js per scrivere le modifiche direttamente su un file JSON.
-2. **Database Reale**: Integrazione con MongoDB o MySQL per una gestione dati persistente e professionale.
-3. **Autenticazione**: Implementazione di JWT (JSON Web Tokens) per proteggere le rotte di creazione, modifica ed eliminazione.
+1. **Frontend Dedicato**: Creazione di una UI in React o Vue.js per consumare le API.
+2. **Autenticazione**: Implementazione di JWT (JSON Web Tokens) per proteggere le rotte di creazione, modifica ed eliminazione.
+3. **Upload Immagini**: Gestione dell'upload fisico di file immagine completando il sistema multer.
 
 ---
 
