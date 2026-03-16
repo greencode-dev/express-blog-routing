@@ -1,12 +1,15 @@
 // Importiamo il modulo myqsl2 per interagire col database
 const mysql = require('mysql2');
 
+// Carichiamo le variabili d'ambiente
+require('dotenv').config();
+
 // Definiamo i parametri di configurazione per il collegamento al server MySQL
 const dbConfiguration = {
-    host: 'localhost', // Indirizzo del server
-    user: 'root',      // Utente del database
-    password: 'root',  // Password dell'utente
-    database: 'blog_db', // Nome del database da utilizzare
+    host: process.env.DB_HOST, // Indirizzo del server
+    user: process.env.DB_USER,      // Utente del database
+    password: process.env.DB_PASSWORD,  // Password dell'utente
+    database: process.env.DB_DATABASE, // Nome del database da utilizzare
 };
 
 // Funzione di callback per gestire l'esito della connessione

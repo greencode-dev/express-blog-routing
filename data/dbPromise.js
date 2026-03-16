@@ -1,10 +1,15 @@
+// Importiamo il modulo mysql2/promise per interagire col database
 const mysql = require('mysql2/promise');
 
+// Carichiamo le variabili d'ambiente
+require('dotenv').config();
+
+// Definiamo i parametri di configurazione per il collegamento al server MySQL
 const dbConfiguration = {
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'blog_db',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
 };
 
 // Utilizziamo un pool di connessioni
