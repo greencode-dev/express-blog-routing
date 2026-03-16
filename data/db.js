@@ -16,7 +16,7 @@ const dbConfiguration = {
 function onDatabaseConnection(error) {
     if (error) throw error; // Se c'è un errore, ferma l'applicazione e mostralo
 
-    console.log('Connessione a MySQL avvenuta con successo!');
+    console.log('Connessione a MySQL (callback) avvenuta con successo!');
 }
 
 // Creiamo la vera e propria istanza di connessione passandogli la configurazione
