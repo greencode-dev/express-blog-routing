@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Manager</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>Blog Manager</h1>
+            <p class="subtitle">Gestione Post e Tag</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Notifica -->
+        <div id="notification" class="notification hidden"></div>
+
+        <!-- Form Crea / Modifica Post -->
+        <section class="form-section">
+            <h2 id="form-title">Nuovo Post</h2>
+            <form id="post-form">
+                <input type="hidden" id="post-id">
+
+                <div class="form-group">
+                    <label for="post-title">Titolo *</label>
+                    <input type="text" id="post-title" placeholder="Titolo del post (min 3 caratteri)" required
+                        minlength="3">
+                </div>
+
+                <div class="form-group">
+                    <label for="post-content">Contenuto *</label>
+                    <textarea id="post-content" rows="5" placeholder="Scrivi il contenuto del post..."
+                        required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="post-image">URL Immagine</label>
+                    <input type="text" id="post-image" placeholder="https://esempio.com/immagine.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label>Tag</label>
+                    <div id="tags-checkboxes" class="tags-checkboxes">
+                        <span class="loading-text">Caricamento tag...</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="btn-submit" class="btn btn-primary">Crea Post</button>
+                    <button type="button" id="btn-cancel" class="btn btn-secondary hidden">Annulla</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Filtro per tag -->
+        <section class="filter-section">
+            <label for="filter-tag">Filtra per tag:</label>
+            <select id="filter-tag">
+                <option value="">Tutti i post</option>
+            </select>
+        </section>
+
+        <!-- Lista Post -->
+        <section class="posts-section">
+            <h2>Post <span id="posts-count" class="count-badge">0</span></h2>
+            <div id="posts-list" class="posts-list">
+                <p class="loading-text">Caricamento post...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Blog Manager &mdash; Express + MySQL</p>
+        </div>
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+
+</html>
